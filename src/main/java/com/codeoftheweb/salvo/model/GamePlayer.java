@@ -39,7 +39,7 @@ public class GamePlayer {
     @JoinColumn(name="gPID")
     //nombre de la variable a buscar
     @OrderBy
-    private Set<Salvo> salvos;
+    private Set<Salvo> salvoes;
 
     private Date joinDate;
 
@@ -48,12 +48,12 @@ public class GamePlayer {
     //region Constructores
     public GamePlayer() {
         ships = new HashSet<>();
-        salvos = new HashSet<>();
+        salvoes = new HashSet<>();
     }
 
     public GamePlayer(Player player, Game game) {
         ships = new HashSet<>();
-        salvos = new HashSet<>();
+        salvoes = new HashSet<>();
         this.joinDate =  new Date();
         this.player = player;
         this.game = game;
@@ -99,15 +99,15 @@ public class GamePlayer {
     }
 
     public Set<Salvo> getSalvo(){
-        return salvos;
+        return salvoes;
     }
 
     public void setSalvos(Set<Salvo> salvos){
-        this.salvos = salvos;
+        this.salvoes = salvos;
     }
 
     public void addSalvo (Salvo newSalvo) {
-        this.salvos.add(newSalvo);
+        this.salvoes.add(newSalvo);
         newSalvo.setGamePlayer(this);
     }
 //endregion

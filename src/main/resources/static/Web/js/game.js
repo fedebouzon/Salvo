@@ -23,6 +23,12 @@ function loadData(){
                     $('#'+shipLocation).addClass('ship-piece');
                 })
             });
+
+            data.salvoes.forEach(function(salvo){
+                            salvo.locations.forEach(function(salvoLocations){
+                                $('#'+salvoLocations).addClass('salvoes');
+                            })
+                        });
         })
         .fail(function( jqXHR, textStatus ) {
           alert( "Failed: " + textStatus );
