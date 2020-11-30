@@ -23,8 +23,10 @@ public class Game_ViewDTO {
         SalvoDTO dtoSalvo = new SalvoDTO();
         dto.put("ships", gamePlayer.getShip().stream().map(ship -> dtoShip.makeShipDTO(ship)).collect(Collectors.toList()));
         dto.put("salvoes", gamePlayer.getGame().getGamePlayers().stream()
-                .map(gp -> gp.getSalvo().stream()
-                        .map(salvo -> dtoSalvo.makeSalvoDTO(salvo)).collect(Collectors.toList())).collect(Collectors.toList()));
+                .flatMap(gamePlayer1 -> gamePlayer1.getSalvoes()
+                        .stream()
+                        .map(salvo -> dtoSalvo.makeSalvoDTO(salvo)))
+                .collect(Collectors.toList()));
         return dto;
     }
 

@@ -1,5 +1,5 @@
 $(function() {
-    loadData()
+    loadData();
 });
 
 function updateView(data) {

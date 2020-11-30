@@ -98,7 +98,7 @@ public class GamePlayer {
         newShip.setGamePlayer(this);
     }
 
-    public Set<Salvo> getSalvo(){
+    public Set<Salvo> getSalvoes(){
         return salvoes;
     }
 
