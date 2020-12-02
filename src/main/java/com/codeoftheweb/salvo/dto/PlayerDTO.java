@@ -20,6 +20,7 @@ public class PlayerDTO {
     public Map<String, Object> makePlayerDTO(Player player){
         Map<String, Object> dto = new LinkedHashMap<>();
         dto.put("id", player.getId());
+        dto.put("name", player.getName());
         dto.put("email", player.getEmail());
 
         return dto;

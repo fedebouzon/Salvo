@@ -23,9 +23,7 @@ public class GamePlayerDTO {
         Map<String, Object> dto = new LinkedHashMap<>();
         dto.put("gamePlayerid", gamePlayer.getId());
         dto.put("joinDate", gamePlayer.getJoinDate());
-        //codigo editado para listar datos de player
         dto.put("player", dtoPlayer.makePlayerDTO(gamePlayer.getPlayer()));
-
         return dto;
     }
 

@@ -11,10 +11,10 @@ function loadData() {
   $.get('/api/game_view/' + getParameterByName('gp'))
     .done(function (data) {
       var playerInfo;
-      if (data.gamePlayers[0].id == getParameterByName('gp'))
-        playerInfo = [data.gamePlayers[0].player, data.gamePlayers[1].player];
-      else
+      if (data.gamePlayers[1].id == getParameterByName('gp'))
         playerInfo = [data.gamePlayers[1].player, data.gamePlayers[0].player];
+      else
+        playerInfo = [data.gamePlayers[0].player, data.gamePlayers[1].player];
 
       $('#playerInfo').text(playerInfo[0].email + '(you) vs ' + playerInfo[1].email);
 

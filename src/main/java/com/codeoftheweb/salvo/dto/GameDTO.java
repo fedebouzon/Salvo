@@ -24,10 +24,12 @@ public class GameDTO {
     public Map<String, Object> makeGameDTO(Game game){
         GamePlayerDTO dtoGamePlayer = new GamePlayerDTO();
         Map<String, Object> dto = new LinkedHashMap<>();
+        ScoreDTO dtoScore = new ScoreDTO();
         dto.put("id", game.getId());
         dto.put("created", game.getCreationDate());
         List<GamePlayer> gamePlayers = game.getGamePlayers().stream().collect(Collectors.toList());
         dto.put("gamePlayers", gamePlayers.stream().map(gamePlayer -> dtoGamePlayer.makeGamePlayerDTO(gamePlayer)));
+        dto.put("score", game.getScores().stream().map(score -> dtoScore.makeScoreDTO(score)).collect(Collectors.toList()));
         return dto;
     }
 

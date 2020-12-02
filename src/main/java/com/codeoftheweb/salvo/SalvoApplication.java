@@ -2,12 +2,34 @@ package com.codeoftheweb.salvo;
 
 import com.codeoftheweb.salvo.model.*;
 import com.codeoftheweb.salvo.repository.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.authentication.configuration.GlobalAuthenticationConfigurerAdapter;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.authority.AuthorityUtils;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.factory.PasswordEncoderFactories;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.WebAttributes;
+import org.springframework.security.web.authentication.logout.HttpStatusReturningLogoutSuccessHandler;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.time.Instant;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
 
 
 @SpringBootApplication
@@ -17,21 +39,25 @@ public class SalvoApplication {
 
 		SpringApplication.run(SalvoApplication.class, args);
 	}
+	@Bean
+	public PasswordEncoder passwordEncoder() {
+		return PasswordEncoderFactories.createDelegatingPasswordEncoder();
+	}
 
 	@Bean
 	public CommandLineRunner initData(PlayerRepository playerRepository,
 									  GameRepository gameRepository,
 									  GamePlayerRepository gamePlayerRepository,
-									  ShipRepository shipRepository, SalvoRepository salvoRepository){
+									  ShipRepository shipRepository, SalvoRepository salvoRepository, ScoreRepository scoreRepository){
 		return args -> {
 
 			//region save a couple of players
-			Player player1 = new Player("DavidCosio","david@gmail.com");
-			Player player2 = new Player("Cohete","rocket1@gmail.com");
-			Player player3 = new Player("Cohete2","rocket2@gmail.com");
-			Player player4 = new Player("Cohete3","rocket3@gmail.com");
-			Player player5 = new Player("Cohete4","rocket4@gmail.com");
-			Player player6 = new Player("Cohete5","rocket5@gmail.com");
+			Player player1 = new Player("DavidCosio","david@gmail.com", passwordEncoder().encode("qweasd"));
+			Player player2 = new Player("Cohete","rocket1@gmail.com",passwordEncoder().encode("qweasd"));
+			Player player3 = new Player("Cohete2","rocket2@gmail.com", passwordEncoder().encode("qweasd"));
+			Player player4 = new Player("Cohete3","rocket3@gmail.com", passwordEncoder().encode("qweasd"));
+			Player player5 = new Player("Cohete4","rocket4@gmail.com", passwordEncoder().encode("qweasd"));
+			Player player6 = new Player("Cohete5","rocket5@gmail.com", passwordEncoder().encode("qweasd"));
 			playerRepository.saveAll(List.of(player1,player2,player3,player4,player5,player6));
 			
 			//endregion
@@ -47,6 +73,17 @@ public class SalvoApplication {
 			gameRepository.save(game1);
 			gameRepository.save(game2);
 			gameRepository.save(game3);
+			//endregion
+
+			//region save a couple of scores
+			Score score1 = new Score(game1,player1,Date.from(Instant.now()),1.0D);
+			Score score2 = new Score(game1,player2,Date.from(Instant.now()),0.0D);
+			Score score3 = new Score(game2,player1,Date.from(Instant.now()),1.0D);
+			Score score4 = new Score(game2,player2,Date.from(Instant.now()),0.0D);
+			scoreRepository.save(score1);
+			scoreRepository.save(score2);
+			scoreRepository.save(score3);
+			scoreRepository.save(score4);
 			//endregion
 
 			//region save a couple of ships
@@ -109,4 +146,68 @@ public class SalvoApplication {
 		};
 	}
 
+}
+
+@Configuration
+class WebSecurityConfiguration extends GlobalAuthenticationConfigurerAdapter {
+
+	@Autowired
+	PlayerRepository playerRepository;
+
+	@Override
+	public void init(AuthenticationManagerBuilder auth) throws Exception {
+		auth.userDetailsService(inputEmail-> {
+			Player player = playerRepository.findByEmail(inputEmail).get();
+			if (player != null) {
+				return new User(player.getEmail(), player.getPassword(),
+						AuthorityUtils.createAuthorityList("USER"));
+			} else {
+				throw new UsernameNotFoundException("Unknown user: " + inputEmail);
+			}
+		});
+	}
+}
+@Configuration
+@EnableWebSecurity
+class WebSecurityConfig extends WebSecurityConfigurerAdapter {
+
+	@Override
+	protected void configure(HttpSecurity http) throws Exception {
+		http.authorizeRequests()
+				.antMatchers("/web/**").permitAll()
+				.antMatchers("/api/**").permitAll()
+				//.antMatchers("/api/game_view/*").hasAuthority("USER")
+				.antMatchers("/h2-console/**").permitAll()
+				//.antMatchers("/api/games").permitAll()
+				;
+
+		http.formLogin()
+				.usernameParameter("email")
+				.passwordParameter("password")
+				.loginPage("/api/login");
+
+		http.logout().logoutUrl("/api/logout");
+
+		// turn off checking for CSRF tokens
+		http.csrf().disable();
+
+		// if user is not authenticated, just send an authentication failure response
+		http.exceptionHandling().authenticationEntryPoint((req, res, exc) -> res.sendError(HttpServletResponse.SC_UNAUTHORIZED));
+
+		// if login is successful, just clear the flags asking for authentication
+		http.formLogin().successHandler((req, res, auth) -> clearAuthenticationAttributes(req));
+
+		// if login fails, just send an authentication failure response
+		http.formLogin().failureHandler((req, res, exc) -> res.sendError(HttpServletResponse.SC_UNAUTHORIZED));
+
+		// if logout is successful, just send a success response
+		http.logout().logoutSuccessHandler(new HttpStatusReturningLogoutSuccessHandler());
+	}
+
+	private void clearAuthenticationAttributes(HttpServletRequest request) {
+		HttpSession session = request.getSession(false);
+		if (session != null) {
+			session.removeAttribute(WebAttributes.AUTHENTICATION_EXCEPTION);
+		}
+	}
 }

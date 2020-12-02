@@ -45,6 +45,10 @@ public class GamePlayer {
 
     //endregion
 
+    public Score getScore(){
+        return this.player.getGameScore(this.game);
+    }
+
     //region Constructores
     public GamePlayer() {
         ships = new HashSet<>();

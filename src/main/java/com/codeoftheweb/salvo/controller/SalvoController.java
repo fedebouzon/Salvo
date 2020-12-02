@@ -22,6 +22,8 @@ public class SalvoController {
     ShipRepository shipRepository;
     @Autowired
     SalvoRepository salvoRepository;
+    @Autowired
+    ScoreRepository scoreRepository;
 
     @RequestMapping("/game_view/{ID}")
     public Map<String, Object> getGamePlayerView(@PathVariable long ID) {
@@ -29,6 +31,13 @@ public class SalvoController {
         return dtoGame_View.makeGame_ViewDTO(gamePlayerRepository.getOne(ID));
     }
 
+    @RequestMapping("/leaderboard")
+    public List<Map<String, Object>> getLeaderboard() {
+        PlayerScoreDTO dtoPlayerScore = new PlayerScoreDTO();
+        return playerRepository.findAll()
+                .stream().map(player -> dtoPlayerScore.makePlayerScoreDTO(player))
+                .collect(Collectors.toList());
+    }
 /*
     @RequestMapping("/player")
     public List<PlayerDTO> getPlayerAll() {
@@ -38,7 +47,7 @@ public class SalvoController {
     }
 */
 
-    @RequestMapping("/player")
+    @RequestMapping("/players")
     public List<Map<String, Object>> getPlayerAll() {
         PlayerDTO dtoPlayer = new PlayerDTO();
         return playerRepository.findAll()
@@ -70,5 +79,19 @@ public class SalvoController {
                 .collect(Collectors.toList());
     }
 
+    @RequestMapping("/scores")
+    public List<Map<String, Object>> getScoreAll() {
+        ScoreDTO dtoScore = new ScoreDTO();
+        return scoreRepository.findAll()
+                .stream().map(score -> dtoScore.makeScoreDTO(score))
+                .collect(Collectors.toList());
+    }
 
+    @RequestMapping("/gameplayers")
+    public List<Map<String,Object>> getGamePlayersAll() {
+        GamePlayerDTO dtoGamePlayer = new GamePlayerDTO();
+        return gamePlayerRepository.findAll()
+                .stream().map(gp -> dtoGamePlayer.makeGamePlayerDTO(gp))
+                .collect(Collectors.toList());
+    }
 }
