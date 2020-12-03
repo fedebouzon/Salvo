@@ -21,7 +21,7 @@ public class GamePlayerDTO {
     public Map<String, Object> makeGamePlayerDTO(GamePlayer gamePlayer){
         PlayerDTO dtoPlayer = new PlayerDTO();
         Map<String, Object> dto = new LinkedHashMap<>();
-        dto.put("gamePlayerid", gamePlayer.getId());
+        dto.put("id", gamePlayer.getId());
         dto.put("joinDate", gamePlayer.getJoinDate());
         dto.put("player", dtoPlayer.makePlayerDTO(gamePlayer.getPlayer()));
         return dto;

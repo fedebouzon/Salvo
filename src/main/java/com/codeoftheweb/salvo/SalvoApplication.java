@@ -1,12 +1,10 @@
 package com.codeoftheweb.salvo;
-
 import com.codeoftheweb.salvo.model.*;
 import com.codeoftheweb.salvo.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -16,13 +14,11 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.WebAttributes;
 import org.springframework.security.web.authentication.logout.HttpStatusReturningLogoutSuccessHandler;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -116,8 +112,10 @@ public class SalvoApplication {
 			//region save a couple of salvoes
 			Salvo salvo1 = new Salvo("1", Arrays.asList("A1", "A2", "A3","A4","A5"));
 			Salvo salvo2 = new Salvo("1", Arrays.asList("B1", "B2", "B3","B4","B5"));
+			Salvo salvo3 = new Salvo("2", Arrays.asList("D1", "D2", "D3","D4","D5"));
 			salvoRepository.save(salvo1);
 			salvoRepository.save(salvo2);
+			salvoRepository.save(salvo3);
 			//endregion
 
 			//region save a couple of gameplayers
@@ -134,6 +132,7 @@ public class SalvoApplication {
 			gamePlayer2.addShip(ship5);
 			gamePlayer1.addSalvo(salvo1);
 			gamePlayer2.addSalvo(salvo2);
+			gamePlayer1.addSalvo(salvo3);
 			gamePlayerRepository.save(gamePlayer1);
 			gamePlayerRepository.save(gamePlayer2);
 			gamePlayerRepository.save(gamePlayer3);
@@ -157,7 +156,7 @@ class WebSecurityConfiguration extends GlobalAuthenticationConfigurerAdapter {
 	@Override
 	public void init(AuthenticationManagerBuilder auth) throws Exception {
 		auth.userDetailsService(inputEmail-> {
-			Player player = playerRepository.findByEmail(inputEmail).get();
+			Player player = playerRepository.findByEmail(inputEmail);
 			if (player != null) {
 				return new User(player.getEmail(), player.getPassword(),
 						AuthorityUtils.createAuthorityList("USER"));
@@ -182,8 +181,8 @@ class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 				;
 
 		http.formLogin()
-				.usernameParameter("email")
-				.passwordParameter("password")
+				.usernameParameter("name")
+				.passwordParameter("pwd")
 				.loginPage("/api/login");
 
 		http.logout().logoutUrl("/api/logout");

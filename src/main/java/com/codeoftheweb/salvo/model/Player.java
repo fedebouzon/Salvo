@@ -40,6 +40,12 @@ public class Player {
         this.password = password;
         scores = new HashSet<>();
     }
+
+    public Player(String email, String password) {
+        this.email = email;
+        this.password = password;
+        scores = new HashSet<>();
+    }
     //endregion
 
     //region Scores
