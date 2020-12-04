@@ -175,7 +175,7 @@ class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		http.authorizeRequests()
 				.antMatchers("/web/**").permitAll()
 				.antMatchers("/api/**").permitAll()
-				//.antMatchers("/api/game_view/*").hasAuthority("USER")
+				.antMatchers("/api/game_view/*").hasAuthority("USER")
 				.antMatchers("/h2-console/**").permitAll()
 				//.antMatchers("/api/games").permitAll()
 				;

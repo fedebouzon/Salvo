@@ -1,7 +1,10 @@
 package com.codeoftheweb.salvo.controller;
 import com.codeoftheweb.salvo.dto.*;
+import com.codeoftheweb.salvo.model.Game;
+import com.codeoftheweb.salvo.model.GamePlayer;
 import com.codeoftheweb.salvo.model.Player;
 import com.codeoftheweb.salvo.repository.*;
+import com.codeoftheweb.salvo.util.Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,13 +16,13 @@ import org.springframework.web.bind.annotation.*;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api")
-public class SalvoController {
-    @Autowired
-    GameRepository gameRepository;
+public class AppController {
+
     @Autowired
     GamePlayerRepository gamePlayerRepository;
     @Autowired
@@ -31,12 +34,22 @@ public class SalvoController {
     @Autowired
     ScoreRepository scoreRepository;
     @Autowired
-    PasswordEncoder passwordEncoder;
+    GameRepository gameRepository;
 
-    @RequestMapping("/game_view/{ID}")
-    public Map<String, Object> getGamePlayerView(@PathVariable long ID) {
+
+    @RequestMapping(path = "/game_view/{ID}", method = RequestMethod.GET )
+    public ResponseEntity<Map<String, Object>> getGamePlayerView(@PathVariable long ID, Authentication authentication) {
+        Long playerLogged = playerRepository.findByEmail(authentication.getName()).getId();
+        Long playerCheck = gamePlayerRepository.getOne(ID).getPlayer().getId();
+        if (Util.isGuest(authentication)) {
+            return new ResponseEntity<>(Util.makeMap("error", "Not Logged in"), HttpStatus.UNAUTHORIZED);
+        }
+        if (playerLogged != playerCheck){
+            return new ResponseEntity<>(Util.makeMap("error", "This is not your game"), HttpStatus.FORBIDDEN);
+        }
+
         Game_ViewDTO dtoGame_View = new Game_ViewDTO();
-        return dtoGame_View.makeGame_ViewDTO(gamePlayerRepository.getOne(ID));
+        return new ResponseEntity<>(dtoGame_View.makeGame_ViewDTO(gamePlayerRepository.getOne(ID)), HttpStatus.ACCEPTED);
     }
 
     @RequestMapping("/leaderBoard")
@@ -47,27 +60,6 @@ public class SalvoController {
                 .collect(Collectors.toList());
     }
 
-    @RequestMapping("/players")
-    public List<Map<String, Object>> getPlayerAll() {
-        PlayerDTO dtoPlayer = new PlayerDTO();
-        return playerRepository.findAll()
-                .stream().map(player -> dtoPlayer.makePlayerDTO(player))
-                .collect(Collectors.toList());
-    }
-    @RequestMapping(path = "/players", method = RequestMethod.POST)
-    public ResponseEntity<Object> register(@RequestParam String email, @RequestParam String password) {
-
-        if (email.isEmpty() || password.isEmpty()) {
-            return new ResponseEntity<>("Missing data", HttpStatus.FORBIDDEN);
-        }
-
-        if (playerRepository.findByEmail(email) !=  null) {
-            return new ResponseEntity<>("Email already in use", HttpStatus.FORBIDDEN);
-        }
-
-        playerRepository.save(new Player(email, passwordEncoder.encode(password)));
-        return new ResponseEntity<>(HttpStatus.CREATED);
-    }
 
     @RequestMapping("/ships")
     public List<Map<String, Object>> getShipAll() {
@@ -77,22 +69,6 @@ public class SalvoController {
                 .collect(Collectors.toList());
     }
 
-    @RequestMapping("/games")
-    public Map<String, Object> getGameAll(Authentication authentication) {
-        Map<String, Object> dto = new LinkedHashMap<>();
-        if(isGuest(authentication)){
-            dto.put("player", "Guest");
-        }else {
-            Player playerLogged =  playerRepository.findByEmail(authentication.getName());
-            LoggedPlayerDTO loggedPlayerDTO = new LoggedPlayerDTO(playerLogged);
-            dto.put("player", loggedPlayerDTO.makeLoggedPlayerDTO(playerLogged));
-        }
-        GameDTO dtoGame = new GameDTO();
-        dto.put("games", gameRepository.findAll()
-                .stream().map(game -> dtoGame.makeGameDTO(game))
-                .collect(Collectors.toList()));
-        return dto;
-    }
 
     @RequestMapping("/salvos")
     public List<Map<String, Object>> getSalvoAll() {
@@ -117,7 +93,34 @@ public class SalvoController {
                 .stream().map(gp -> dtoGamePlayer.makeGamePlayerDTO(gp))
                 .collect(Collectors.toList());
     }
-    private boolean isGuest(Authentication authentication){
-        return authentication == null || authentication instanceof AnonymousAuthenticationToken;
+
+    @RequestMapping(path = "/game/{game_id}/players", method = RequestMethod.POST)
+    public ResponseEntity<Object> getJoinGame(@PathVariable long game_id,Authentication authentication) {
+        if (Util.isGuest(authentication)) {
+            return new ResponseEntity<>(Util.makeMap("error", "Not Logged in"), HttpStatus.UNAUTHORIZED);
+        }
+        Player player = playerRepository.findByEmail(authentication.getName());
+
+        Game gameToJoin = gameRepository.getOne(game_id);
+        if (gameToJoin == null) {
+            return new ResponseEntity<>(Util.makeMap("error", "No such game"), HttpStatus.FORBIDDEN);
+        }
+
+        long gamePlayersCount = gameToJoin.getGamePlayers().size();
+
+        Set<Long> gamePlayersCheck = gameToJoin.getGamePlayers().stream()
+                .map(gamePlayer -> gamePlayer.getPlayer().getId()).collect(Collectors.toSet());
+
+        if (gamePlayersCheck.contains(player.getId())){
+            return new ResponseEntity<>(Util.makeMap("error","You are already in the game"), HttpStatus.FORBIDDEN);
+        }
+        if (gamePlayersCount == 1){
+            GamePlayer gamePlayer = gamePlayerRepository.save(new GamePlayer(player, gameToJoin));
+            return new ResponseEntity<>(Util.makeMap("gpid",gamePlayer.getId()), HttpStatus.CREATED);
+        }else{
+            return new ResponseEntity<>(Util.makeMap("error","Game is full"), HttpStatus.FORBIDDEN);
+        }
+
+
     }
 }
