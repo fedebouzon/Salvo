@@ -46,6 +46,7 @@ public class SalvoApplication {
 									  GamePlayerRepository gamePlayerRepository,
 									  ShipRepository shipRepository, SalvoRepository salvoRepository, ScoreRepository scoreRepository){
 		return args -> {
+/*
 
 			//region save a couple of players
 			Player player1 = new Player("DavidCosio","david@gmail.com", passwordEncoder().encode("qweasd"));
@@ -83,15 +84,16 @@ public class SalvoApplication {
 			//endregion
 
 			//region save a couple of ships
-
-			/*
+			*/
+/*
 			Number Type Length
 			1 Carrier 5
 			1 Battleship 4
 			1 Submarine 3
 			1 Destroyer 3
 			1 Patrol Boat 2
-			*/
+		*//*
+
 
 			Ship ship1 = new Ship("Carrier", Arrays.asList("A1", "A2", "A3","A4","A5"));
 			//probando si hay diferencia con Arrays as List
@@ -140,6 +142,7 @@ public class SalvoApplication {
 			gamePlayerRepository.save(gamePlayer5);
 			gamePlayerRepository.save(gamePlayer6);
 			//endregion
+*/
 
 
 		};

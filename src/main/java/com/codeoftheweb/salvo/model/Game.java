@@ -42,6 +42,8 @@ public class Game {
         this.created = created;
         gamePlayers = new HashSet<>();
     }
+
+
 //endregion
 
     //region settergetter
