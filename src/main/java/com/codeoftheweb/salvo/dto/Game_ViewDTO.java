@@ -1,6 +1,9 @@
 package com.codeoftheweb.salvo.dto;
 
 import com.codeoftheweb.salvo.model.GamePlayer;
+
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -27,6 +30,13 @@ public class Game_ViewDTO {
                         .stream()
                         .map(salvo -> dtoSalvo.makeSalvoDTO(salvo)))
                 .collect(Collectors.toList()));
+        //hardcoding hits
+        Map<String, Object> hits = new LinkedHashMap<>();
+
+        hits.put("self", new ArrayList<>());
+        hits.put("opponent", new ArrayList<>());
+        dto.put("hits", hits);
+        dto.put("gameState", "PLACESHIPS");
         return dto;
     }
 
