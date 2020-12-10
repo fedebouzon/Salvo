@@ -89,7 +89,7 @@ public class GamePlayer {
         return joinDate;
     }
 
-    public Set<Ship> getShip() {
+    public Set<Ship> getShips() {
         return ships;
     }
 

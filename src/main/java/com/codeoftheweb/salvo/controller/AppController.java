@@ -39,11 +39,12 @@ public class AppController {
 
     @RequestMapping(path = "/game_view/{ID}", method = RequestMethod.GET )
     public ResponseEntity<Map<String, Object>> getGamePlayerView(@PathVariable long ID, Authentication authentication) {
-        Long playerLogged = playerRepository.findByEmail(authentication.getName()).getId();
-        Long playerCheck = gamePlayerRepository.getOne(ID).getPlayer().getId();
         if (Util.isGuest(authentication)) {
             return new ResponseEntity<>(Util.makeMap("error", "Not Logged in"), HttpStatus.UNAUTHORIZED);
         }
+        Long playerLogged = playerRepository.findByEmail(authentication.getName()).getId();
+        Long playerCheck = gamePlayerRepository.getOne(ID).getPlayer().getId();
+
         if (playerLogged != playerCheck){
             return new ResponseEntity<>(Util.makeMap("error", "This is not your game"), HttpStatus.FORBIDDEN);
         }
