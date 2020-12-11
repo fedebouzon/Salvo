@@ -26,7 +26,6 @@ public class GamePlayerDTO {
         dto.put("player", dtoPlayer.makePlayerDTO(gamePlayer.getPlayer()));
         return dto;
     }
-
     //region gettersetter
 
     public GamePlayer getGamePlayer() {

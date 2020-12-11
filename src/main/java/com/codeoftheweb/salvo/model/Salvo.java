@@ -14,7 +14,7 @@ public class Salvo {
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "native")
     @GenericGenerator(name = "native", strategy = "native")
     private Long id;
-    private String turn;
+    private long turn;
 
     @ElementCollection
     @Column(name="locations")
@@ -33,7 +33,7 @@ public class Salvo {
         locations = new ArrayList<>();
     }
 
-    public Salvo(String turn, List<String> locations) {
+    public Salvo(long turn, List<String> locations) {
         this.turn = turn;
         this.locations = locations;
     }
@@ -50,11 +50,11 @@ public class Salvo {
         return id;
     }
 
-    public String getTurn() {
+    public long getTurn() {
         return turn;
     }
 
-    public void setTurn(String turn) {
+    public void setTurn(long turn) {
         this.turn = turn;
     }
 

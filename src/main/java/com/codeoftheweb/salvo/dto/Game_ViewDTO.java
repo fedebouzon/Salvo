@@ -36,7 +36,7 @@ public class Game_ViewDTO {
         hits.put("self", new ArrayList<>());
         hits.put("opponent", new ArrayList<>());
         dto.put("hits", hits);
-        dto.put("gameState", "PLACESHIPS");
+        dto.put("gameState", "PLAY");
         return dto;
     }
 

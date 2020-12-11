@@ -95,12 +95,12 @@ public class SalvoApplication {
 		*/
 
 
-			Ship ship1 = new Ship("Carrier", Arrays.asList("A1", "A2", "A3","A4","A5"));
+			Ship ship1 = new Ship("carrier", Arrays.asList("A1", "A2", "A3","A4","A5"));
 			//probando si hay diferencia con Arrays as List
-			Ship ship2 = new Ship("Battleship", List.of("B1","B2","B3","B4"));
-			Ship ship3 = new Ship("Destructor", List.of("D1", "D2", "D3"));
-			Ship ship4 = new Ship("Submarine", List.of("E1","E2","E3"));
-			Ship ship5 = new Ship("Patrol_Boat", List.of("F1","F2"));
+			Ship ship2 = new Ship("battleship", List.of("B1","B2","B3","B4"));
+			Ship ship3 = new Ship("destroyer", List.of("D1", "D2", "D3"));
+			Ship ship4 = new Ship("submarine", List.of("E1","E2","E3"));
+			Ship ship5 = new Ship("patrolBoat", List.of("F1","F2"));
 			//Ship ship6 = new Ship("patrol",Arrays.as)
 
 			shipRepository.save(ship1);
@@ -112,9 +112,9 @@ public class SalvoApplication {
 			//endregion
 
 			//region save a couple of salvoes
-			Salvo salvo1 = new Salvo("1", Arrays.asList("A1", "A2", "A3","A4","A5"));
-			Salvo salvo2 = new Salvo("1", Arrays.asList("B1", "B2", "B3","B4","B5"));
-			Salvo salvo3 = new Salvo("2", Arrays.asList("D1", "D2", "D3","D4","D5"));
+			Salvo salvo1 = new Salvo(1, Arrays.asList("A1", "A2", "A3","A4","A5"));
+			Salvo salvo2 = new Salvo(1, Arrays.asList("B1", "B2", "B3","B4","B5"));
+			Salvo salvo3 = new Salvo(2, Arrays.asList("D1", "D2", "D3","D4","D5"));
 			salvoRepository.save(salvo1);
 			salvoRepository.save(salvo2);
 			salvoRepository.save(salvo3);
