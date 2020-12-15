@@ -96,19 +96,26 @@ public class SalvoApplication {
 
 
 			Ship ship1 = new Ship("carrier", Arrays.asList("A1", "A2", "A3","A4","A5"));
-			//probando si hay diferencia con Arrays as List
 			Ship ship2 = new Ship("battleship", List.of("B1","B2","B3","B4"));
 			Ship ship3 = new Ship("destroyer", List.of("D1", "D2", "D3"));
 			Ship ship4 = new Ship("submarine", List.of("E1","E2","E3"));
 			Ship ship5 = new Ship("patrolBoat", List.of("F1","F2"));
-			//Ship ship6 = new Ship("patrol",Arrays.as)
+			Ship ship6 = new Ship("carrier", Arrays.asList("A1", "A2", "A3","A4","A5"));
+			Ship ship7 = new Ship("battleship", List.of("B1","B2","B3","B4"));
+			Ship ship8 = new Ship("destroyer", List.of("D1", "D2", "D3"));
+			Ship ship9 = new Ship("submarine", List.of("E1","E2","E3"));
+			Ship ship10 = new Ship("patrolBoat", List.of("F1","F2"));
 
 			shipRepository.save(ship1);
 			shipRepository.save(ship2);
 			shipRepository.save(ship3);
 			shipRepository.save(ship4);
 			shipRepository.save(ship5);
-
+			shipRepository.save(ship6);
+			shipRepository.save(ship7);
+			shipRepository.save(ship8);
+			shipRepository.save(ship9);
+			shipRepository.save(ship10);
 			//endregion
 
 			//region save a couple of salvoes
@@ -130,8 +137,14 @@ public class SalvoApplication {
 			gamePlayer1.addShip(ship1);
 			gamePlayer1.addShip(ship2);
 			gamePlayer1.addShip(ship3);
-			gamePlayer2.addShip(ship4);
-			gamePlayer2.addShip(ship5);
+			gamePlayer1.addShip(ship4);
+			gamePlayer1.addShip(ship5);
+			gamePlayer2.addShip(ship6);
+			gamePlayer2.addShip(ship7);
+			gamePlayer2.addShip(ship8);
+			gamePlayer2.addShip(ship9);
+			gamePlayer2.addShip(ship10);
+
 			gamePlayer1.addSalvo(salvo1);
 			gamePlayer2.addSalvo(salvo2);
 			gamePlayer1.addSalvo(salvo3);

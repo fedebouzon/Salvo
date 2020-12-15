@@ -3,6 +3,7 @@ package com.codeoftheweb.salvo.model;
 import org.hibernate.annotations.GenericGenerator;
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 @Entity
@@ -19,10 +20,10 @@ public class Ship {
     @Column(name="locations")
     private List<String> locations;
 
-
     @ManyToOne(fetch=FetchType.EAGER)
     @JoinColumn(name="gamePlayerID")
     private GamePlayer gamePlayer;
+
     //endregion
 
     //region constructores

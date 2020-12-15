@@ -1,6 +1,7 @@
 package com.codeoftheweb.salvo.dto;
 
 import com.codeoftheweb.salvo.model.GamePlayer;
+import com.codeoftheweb.salvo.util.Util;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -24,19 +25,24 @@ public class Game_ViewDTO {
         Map<String, Object> dto = dtoGame.makeGameDTO(gamePlayer.getGame());
         ShipDTO dtoShip = new ShipDTO();
         SalvoDTO dtoSalvo = new SalvoDTO();
+        HitsDTO dtoHits = new HitsDTO();
         dto.put("ships", gamePlayer.getShips().stream().map(ship -> dtoShip.makeShipDTO(ship)).collect(Collectors.toList()));
         dto.put("salvoes", gamePlayer.getGame().getGamePlayers().stream()
                 .flatMap(gamePlayer1 -> gamePlayer1.getSalvoes()
                         .stream()
                         .map(salvo -> dtoSalvo.makeSalvoDTO(salvo)))
                 .collect(Collectors.toList()));
-        //hardcoding hits
-        Map<String, Object> hits = new LinkedHashMap<>();
 
+        Map<String, Object> hits = new LinkedHashMap<>();
+    if(gamePlayer.getGame().getGamePlayers().size() == 2) {
+        hits.put("self", dtoHits.makeHitsDTO(gamePlayer));
+        hits.put("opponent", dtoHits.makeHitsDTO(Util.getOpponent(gamePlayer)));
+    }else{
         hits.put("self", new ArrayList<>());
         hits.put("opponent", new ArrayList<>());
+    }
         dto.put("hits", hits);
-        dto.put("gameState", "PLAY");
+        dto.put("gameState", Util.gameState(gamePlayer));
         return dto;
     }
 
