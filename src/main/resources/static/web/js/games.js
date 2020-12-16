@@ -3,7 +3,11 @@ var gamesData;
 var playersArray;
 var submitButton;
 
-updateJson();
+setTimeout(
+                function()
+                {
+                    updateJson();
+                }, 4000);
 
 $(function() {
     $('.submitbutton').click(function () {
