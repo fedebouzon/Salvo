@@ -3,7 +3,11 @@ var gamesData;
 var playersArray;
 var submitButton;
 
-updateJson();
+setTimeout(
+                function()
+                {
+                    updateJson();
+                }, 4000);
 
 $(function() {
     $('.submitbutton').click(function () {
@@ -57,7 +61,7 @@ $('#login-form').on('submit', function (event) {
                         $("#username").val("");
                         $("#password").val("");
                         updateJson();
-
+                        $("#createGameForm").show();
                     })
                     .fail(function() {
                         console.log("login failed");
