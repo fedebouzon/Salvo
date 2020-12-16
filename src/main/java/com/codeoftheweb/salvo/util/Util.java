@@ -1,17 +1,17 @@
 package com.codeoftheweb.salvo.util;
 
-import com.codeoftheweb.salvo.model.GamePlayer;
-import com.codeoftheweb.salvo.model.Salvo;
-import com.codeoftheweb.salvo.model.Ship;
+import com.codeoftheweb.salvo.dto.HitsDTO;
+import com.codeoftheweb.salvo.model.*;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 
-import java.util.*;
-import java.util.stream.Stream;
 
-import static java.util.stream.Collectors.toMap;
+import java.util.*;
+
 
 public class Util {
+
+
     public static Map<String, Object> makeMap(String key, Object value) {
         Map<String, Object> map = new LinkedHashMap<>();
         map.put(key, value);
@@ -31,28 +31,49 @@ public class Util {
         }
         return opponent;
     }
-    /*public static Map<String, Integer> shipTypes = Stream.of(
-            new Object[][]{
-                    {"carrier", 5},
-                    {"battleship", 4},
-                    {"submarine", 3},
-                    {"destroyer", 3},
-                    {"patrolBoat", 2}
-            }).collect(toMap(data -> (String)data[0], data -> (Integer)data[1]));
 
-     */
-    public static String gameState(GamePlayer gamePlayer){
-       if(gamePlayer.getShips().isEmpty()){
+    public static String gameState(GamePlayer gamePlayer) {
+
+
+
+        if (gamePlayer.getShips().isEmpty()) {
             return "PLACESHIPS";
         }
-        if(gamePlayer.getGame().getGamePlayers().size() == 1){
+        if (gamePlayer.getGame().getGamePlayers().size() == 1 || Util.getOpponent(gamePlayer).getShips().size() == 0) {
             return "WAITINGFOROPP";
         }
+        HitsDTO oppHit = new HitsDTO();
+        HitsDTO myHit = new HitsDTO();
 
+        if(Util.getOpponent(gamePlayer).getShips().size() == 5) {
+            myHit.makeHitsDTO(gamePlayer);
+            oppHit.makeHitsDTO(Util.getOpponent(gamePlayer));
+            if (myHit.isAllSunk() && oppHit.isAllSunk()) {
+                if (gamePlayer.getSalvoes().size() == Util.getOpponent(gamePlayer).getSalvoes().size()) {
+                    return "TIE";
+                }
+            } else if (myHit.isAllSunk()) {
+                if (gamePlayer.getSalvoes().size() == Util.getOpponent(gamePlayer).getSalvoes().size()) {
+                    return "LOST";
+                }
+            } else if (oppHit.isAllSunk()) {
+                if (gamePlayer.getSalvoes().size() == Util.getOpponent(gamePlayer).getSalvoes().size()) {
+                    return "WON";
+                }
+            }
+            if (gamePlayer.getSalvoes().size() > Util.getOpponent(gamePlayer).getSalvoes().size()) {
+                return "WAIT";
+            }
+        }
         return "PLAY";
     }
 
     public static List<String> getLocationByType(String type, GamePlayer gamePlayer) {
-        return gamePlayer.getShips().size() == 0 ? new ArrayList<>() : gamePlayer.getShips().stream().filter(ship -> ship.getType().equals(type)).findFirst().get().getLocations();
+        List<String> list = new ArrayList<>();
+        if (!gamePlayer.getShips().isEmpty()){
+        return gamePlayer.getShips().stream()
+                .filter(ship -> ship.getType().equals(type)).findFirst().get().getLocations();
+        }
+        return list;
     }
 }

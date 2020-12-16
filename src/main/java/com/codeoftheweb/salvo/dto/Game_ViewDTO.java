@@ -1,14 +1,17 @@
 package com.codeoftheweb.salvo.dto;
 
 import com.codeoftheweb.salvo.model.GamePlayer;
+import com.codeoftheweb.salvo.model.Score;
+import com.codeoftheweb.salvo.repository.ScoreRepository;
 import com.codeoftheweb.salvo.util.Util;
+import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.time.Instant;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class Game_ViewDTO {
+
     private GamePlayer gamePlayer;
 
     //region constructor
@@ -43,6 +46,8 @@ public class Game_ViewDTO {
     }
         dto.put("hits", hits);
         dto.put("gameState", Util.gameState(gamePlayer));
+
+
         return dto;
     }
 

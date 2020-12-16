@@ -3,6 +3,7 @@ import com.codeoftheweb.salvo.dto.*;
 import com.codeoftheweb.salvo.model.Game;
 import com.codeoftheweb.salvo.model.GamePlayer;
 import com.codeoftheweb.salvo.model.Player;
+import com.codeoftheweb.salvo.model.Score;
 import com.codeoftheweb.salvo.repository.*;
 import com.codeoftheweb.salvo.util.Util;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,10 +14,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.time.Instant;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @RestController
@@ -50,6 +49,41 @@ public class AppController {
         }
 
         Game_ViewDTO dtoGame_View = new Game_ViewDTO();
+        GamePlayer gamePlayer = gamePlayerRepository.getOne(ID);
+
+            if (Util.gameState(gamePlayer) == "WON") {
+                if (gamePlayer.getGame().getScores().size() < 2) {
+                    Set<Score> scores = new HashSet<>();
+                    Score score1 = new Score();
+                    score1.setPlayer(gamePlayer.getPlayer());
+                    score1.setGame(gamePlayer.getGame());
+                    score1.setFinishDate(Date.from(Instant.now()));
+                    score1.setScore(1D);
+                    scoreRepository.save(score1);
+                    Score score2 = new Score();
+                    score2.setPlayer(Util.getOpponent(gamePlayer).getPlayer());
+                    score2.setGame(gamePlayer.getGame());
+                    score2.setFinishDate(Date.from(Instant.now()));
+                    score2.setScore(0D);
+                    scoreRepository.save(score2);
+                    scores.add(score1);
+                    scores.add(score2);
+
+                    Util.getOpponent(gamePlayer).getGame().setScores(scores);
+                }
+            }
+            if (Util.gameState(gamePlayer) == "TIE") {
+                if (gamePlayer.getGame().getScores().size() < 2) {
+                    Score score1 = new Score();
+                    score1.setPlayer(gamePlayer.getPlayer());
+                    score1.setGame(gamePlayer.getGame());
+                    score1.setFinishDate(Date.from(Instant.now()));
+                    score1.setScore(0.5D);
+                    scoreRepository.save(score1);
+
+                }
+            }
+
         return new ResponseEntity<>(dtoGame_View.makeGame_ViewDTO(gamePlayerRepository.getOne(ID)), HttpStatus.ACCEPTED);
     }
 

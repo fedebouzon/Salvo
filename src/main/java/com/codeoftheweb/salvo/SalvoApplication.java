@@ -58,6 +58,7 @@ public class SalvoApplication {
 			playerRepository.saveAll(List.of(player1,player2,player3,player4,player5,player6));
 			
 			//endregion
+/*
 
 			//region save a couple of games
 			Game game1 = new Game();
@@ -71,7 +72,8 @@ public class SalvoApplication {
 			gameRepository.save(game2);
 			gameRepository.save(game3);
 			//endregion
-
+*/
+/*
 			//region save a couple of scores
 			Score score1 = new Score(game1,player1,Date.from(Instant.now()),1.0D);
 			Score score2 = new Score(game1,player2,Date.from(Instant.now()),0.0D);
@@ -82,9 +84,11 @@ public class SalvoApplication {
 			scoreRepository.save(score3);
 			scoreRepository.save(score4);
 			//endregion
+*//*
 
 			//region save a couple of ships
 
+*/
 /*
 			Number Type Length
 			1 Carrier 5
@@ -92,7 +96,8 @@ public class SalvoApplication {
 			1 Submarine 3
 			1 Destroyer 3
 			1 Patrol Boat 2
-		*/
+		*//*
+
 
 
 			Ship ship1 = new Ship("carrier", Arrays.asList("A1", "A2", "A3","A4","A5"));
@@ -120,11 +125,19 @@ public class SalvoApplication {
 
 			//region save a couple of salvoes
 			Salvo salvo1 = new Salvo(1, Arrays.asList("A1", "A2", "A3","A4","A5"));
-			Salvo salvo2 = new Salvo(1, Arrays.asList("B1", "B2", "B3","B4","B5"));
-			Salvo salvo3 = new Salvo(2, Arrays.asList("D1", "D2", "D3","D4","D5"));
+			Salvo salvo2 = new Salvo(1, Arrays.asList("A1", "A2", "A3","A4","A5"));
+			Salvo salvo3 = new Salvo(2, Arrays.asList("B1", "B2", "B3","B4","D5"));
+			Salvo salvo4 = new Salvo(2, Arrays.asList("B1", "B2", "B3","B4","D5"));
+			Salvo salvo5 = new Salvo(3, Arrays.asList("D1", "D2", "D3","F1","F2"));
+			Salvo salvo6 = new Salvo(3, Arrays.asList("D1", "D2", "D3","F1","F2"));
+
 			salvoRepository.save(salvo1);
 			salvoRepository.save(salvo2);
 			salvoRepository.save(salvo3);
+			salvoRepository.save(salvo4);
+			salvoRepository.save(salvo5);
+			salvoRepository.save(salvo6);
+
 			//endregion
 
 			//region save a couple of gameplayers
@@ -148,6 +161,9 @@ public class SalvoApplication {
 			gamePlayer1.addSalvo(salvo1);
 			gamePlayer2.addSalvo(salvo2);
 			gamePlayer1.addSalvo(salvo3);
+			gamePlayer2.addSalvo(salvo4);
+			gamePlayer1.addSalvo(salvo5);
+			gamePlayer2.addSalvo(salvo6);
 			gamePlayerRepository.save(gamePlayer1);
 			gamePlayerRepository.save(gamePlayer2);
 			gamePlayerRepository.save(gamePlayer3);
@@ -157,6 +173,7 @@ public class SalvoApplication {
 			//endregion
 
 
+*/
 
 		};
 	}
