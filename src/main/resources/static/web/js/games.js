@@ -3,7 +3,7 @@ var gamesData;
 var playersArray;
 var submitButton;
 
-setTimeout(
+setInterval(
                 function()
                 {
                     updateJson();
