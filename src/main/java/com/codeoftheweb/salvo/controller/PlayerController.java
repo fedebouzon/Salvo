@@ -3,6 +3,7 @@ package com.codeoftheweb.salvo.controller;
 import com.codeoftheweb.salvo.dto.PlayerDTO;
 import com.codeoftheweb.salvo.model.Player;
 import com.codeoftheweb.salvo.repository.PlayerRepository;
+import com.codeoftheweb.salvo.util.Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,15 +29,16 @@ public class PlayerController {
     public ResponseEntity<Object> register(@RequestParam String email, @RequestParam String password) {
 
         if (email.isEmpty() || password.isEmpty()) {
-            return new ResponseEntity<>("Missing data", HttpStatus.FORBIDDEN);
+            return new ResponseEntity<>(Util.makeMap("error","Missing data"), HttpStatus.FORBIDDEN);
         }
 
         if (playerRepository.findByEmail(email) !=  null) {
-            return new ResponseEntity<>("Email already in use", HttpStatus.FORBIDDEN);
+            return new ResponseEntity<>(Util.makeMap("error","Email already in use"), HttpStatus.FORBIDDEN);
         }
 
         playerRepository.save(new Player(email, passwordEncoder.encode(password)));
-        return new ResponseEntity<>(HttpStatus.CREATED);
+        return new ResponseEntity<>(Util.makeMap("msg", "player created"), HttpStatus.CREATED);
+
     }
 
     @RequestMapping(path = "/players", method = RequestMethod.GET)

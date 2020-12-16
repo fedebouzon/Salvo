@@ -47,7 +47,7 @@ public class SalvoApplication {
 									  ShipRepository shipRepository, SalvoRepository salvoRepository, ScoreRepository scoreRepository){
 		return args -> {
 
-
+/*
 			//region save a couple of players
 			Player player1 = new Player("DavidCosio","david@gmail.com", passwordEncoder().encode("qweasd"));
 			Player player2 = new Player("Cohete","rocket1@gmail.com",passwordEncoder().encode("qweasd"));
@@ -56,7 +56,7 @@ public class SalvoApplication {
 			Player player5 = new Player("Cohete4","rocket4@gmail.com", passwordEncoder().encode("qweasd"));
 			Player player6 = new Player("Cohete5","rocket5@gmail.com", passwordEncoder().encode("qweasd"));
 			playerRepository.saveAll(List.of(player1,player2,player3,player4,player5,player6));
-			
+	*/
 			//endregion
 /*
 
